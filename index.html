@@ -1,33 +1,28 @@
+> Ahmed Said Aidara:
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription / Connexion</title>
+    <title>Inscription et Connexion</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f4f4f9;
             color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
         }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
+        .form-container {
             max-width: 400px;
-            text-align: center;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h2 {
+            text-align: center;
             color: gold;
         }
-        input {
+        input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -35,74 +30,138 @@
             border-radius: 5px;
         }
         button {
+            width: 100%;
+            padding: 10px;
             background-color: gold;
-            color: white;
-            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #e5c100;
+            background-color: darkgoldenrod;
+        }
+        .form-container p {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>Inscription / Connexion</h2>
-    <form id="authForm">
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Mot de passe" required>
-        <button type="submit" id="submitBtn">S'inscrire / Se connecter</button>
+
+<!-- Formulaire d'Inscription -->
+<div class="form-container" id="form-container">
+    <h2>Inscription</h2>
+    <form id="formInscription">
+        <input type="text" id="name" placeholder="Nom" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Mot de passe" required><br>
+        <button type="submit">S'inscrire</button>
     </form>
+    <p>Déjà inscrit ? <a href="#" onclick="showLogin()">Se connecter</a></p>
 </div>
 
-<script type="module">
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-    import { initializeApp } from "firebase/app";
+<!-- Formulaire de Connexion -->
+<div class="form-container" id="form-login" style="display:none;">
+    <h2>Connexion</h2>
+    <form id="formConnexion">
+        <input type="email" id="emailLogin" placeholder="Email" required><br>
+        <input type="password" id="passwordLogin" placeholder="Mot de passe" required><br>
+        <button type="submit">Se connecter</button>
+    </form>
+    <p>Pas encore inscrit ? <a href="#" onclick="showSignup()">S'inscrire</a></p>
+</div>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAZSUTkv15sgATgEIFRDzLagkDO3EhjXLk",
-        authDomain: "lavoiedusalut-200cd.firebaseapp.com",
-        projectId: "lavoiedusalut-200cd",
-        storageBucket: "lavoiedusalut-200cd.firebasestorage.app",
-        messagingSenderId: "550979465757",
-        appId: "1:550979465757:web:fefe5f2967f355ab414cf4",
-        measurementId: "G-YHC0EF421Q"
-    };
+<script>
+    // Fonction pour afficher le formulaire d'inscription
+    function showSignup() {
+        document.getElementById("form-container").style.display = "block";
+        document.getElementById("form-login").style.display = "none";
+    }
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // Fonction pour afficher le formulaire de connexion
+    function showLogin() {
+        document.getElementById("form-container").style.display = "none";
+        document.getElementById("form-login").style.display = "block";
+    }
 
-    document.getElementById('authForm').addEventListener('submit', (e) => {
+    // Écouteur d'événement pour l'inscription
+    document.getElementById("formInscription").addEventListener("submit", function(e) {
         e.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
 
-        const isNewUser = !document.getElementById('submitBtn').innerText.includes('Se connecter');
-
-        if (isNewUser) {
-            // Inscription
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Redirection vers payment.html après inscription
-                    window.location.href = 'payment.html';
-                })
-                .catch((error) => {
-                    alert(error.message);
-                });
-        } else {
-            // Connexion
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Redirection vers livre.html après connexion
-                    window.location.href = 'livre.html';
-                })
-                .catch((error) => {
-                    alert(error.message);
-                });
+        // Vérification des champs vides
+        if (!name⠟⠵⠵⠞⠟⠟⠺⠺⠟⠟!password) {
+            alert("Tous les champs doivent être remplis.");
+            return;
         }
+
+        // Envoi des données à Google Apps Script
+        fetch('https://script.google.com/macros/s/AKfycbzvVItarXEpI8LIPTzOu09TH19G2YrUoYzZJMBJxT0bJ3kQ0vtJIrLEfEJgmY9TtsCx6Q/exec', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'name': name,
+                'email': email,
+                'password': password,
+                'action': 'register'  // Action pour identifier qu'il s'agit d'une inscription
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Réponse de l'inscription : " + data);  // Affiche la réponse du script dans la console
+            if (data.includes("success")) {
+                alert("Inscription réussie !");
+                window.location.href = "payment.
+
+> Ahmed Said Aidara:
+html";  // Redirection vers la page de paiement après inscription
+            } else {
+                alert("Erreur lors de l'inscription : " + data);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'inscription : ", error);
+            alert("Une erreur s'est produite, veuillez réessayer.");
+        });
+    });
+
+    // Écouteur d'événement pour la connexion
+    document.getElementById("formConnexion").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let email = document.getElementById("emailLogin").value;
+        let password = document.getElementById("passwordLogin").value;
+
+        // Vérification des champs vides
+        if (!email || !password) {
+            alert("Tous les champs doivent être remplis.");
+            return;
+        }
+
+        // Envoi des données à Google Apps Script
+        fetch('https://script.google.com/macros/s/AKfycbzvVItarXEpI8LIPTzOu09TH19G2YrUoYzZJMBJxT0bJ3kQ0vtJIrLEfEJgmY9TtsCx6Q/exec', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'email': email,
+                'password': password,
+                'action': 'login'  // Action pour identifier qu'il s'agit d'une connexion
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Réponse de la connexion : " + data);  // Affiche la réponse du script dans la console
+            if (data === "Connexion réussie") {
+                window.location.href = "livre.html";  // Redirection vers la page de livre après connexion réussie
+            } else {
+                alert("Email ou mot de passe incorrect.");
+            }
+        })
+        .catch(error => {
+            console.error("Erreur lors de la connexion : ", error);
+            alert("Une erreur s'est produite, veuillez réessayer.");
+        });
     });
 </script>
 
