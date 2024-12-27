@@ -84,6 +84,22 @@
         document.getElementById("form-login").style.display = "block";
     }
 
+    // Fonction de traitement de la réponse et redirection
+    function handleResponse(responseText, action) {
+        console.log("Réponse serveur : " + responseText);
+        if (responseText.includes("success")) {
+            if (action === "register") {
+                alert("Inscription réussie !");
+                window.location.href = "payment.html";  // Redirection vers la page de paiement après inscription
+            } else if (action === "login") {
+                alert("Connexion réussie !");
+                window.location.href = "livre.html";  // Redirection vers la page de livre après connexion
+            }
+        } else {
+            alert("Erreur : " + responseText);
+        }
+    }
+
     // Écouteur d'événement pour l'inscription
     document.getElementById("formInscription").addEventListener("submit", function(e) {
         e.preventDefault();
@@ -92,34 +108,25 @@
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
 
-        // Vérification des champs vides
-        if (!name⠟⠵⠵⠞⠟⠟⠺⠺⠟⠟!password) {
+        if (!name⠞⠵⠵⠟⠞⠟⠞⠟⠺⠺!password) {
             alert("Tous les champs doivent être remplis.");
             return;
         }
 
-        // Envoi des données à Google Apps Script
         fetch('https://script.google.com/macros/s/AKfycbzvVItarXEpI8LIPTzOu09TH19G2YrUoYzZJMBJxT0bJ3kQ0vtJIrLEfEJgmY9TtsCx6Q/exec', {
             method: 'POST',
-            body: new URLSearchParams({
+
+> Ahmed Said Aidara:
+body: new URLSearchParams({
                 'name': name,
                 'email': email,
                 'password': password,
-                'action': 'register'  // Action pour identifier qu'il s'agit d'une inscription
+                'action': 'register'
             })
         })
         .then(response => response.text())
         .then(data => {
-            console.log("Réponse de l'inscription : " + data);  // Affiche la réponse du script dans la console
-            if (data.includes("success")) {
-                alert("Inscription réussie !");
-                window.location.href = "payment.
-
-> Ahmed Said Aidara:
-html";  // Redirection vers la page de paiement après inscription
-            } else {
-                alert("Erreur lors de l'inscription : " + data);
-            }
+            handleResponse(data, "register");
         })
         .catch(error => {
             console.error("Erreur lors de l'inscription : ", error);
@@ -134,29 +141,22 @@ html";  // Redirection vers la page de paiement après inscription
         let email = document.getElementById("emailLogin").value;
         let password = document.getElementById("passwordLogin").value;
 
-        // Vérification des champs vides
         if (!email || !password) {
             alert("Tous les champs doivent être remplis.");
             return;
         }
 
-        // Envoi des données à Google Apps Script
         fetch('https://script.google.com/macros/s/AKfycbzvVItarXEpI8LIPTzOu09TH19G2YrUoYzZJMBJxT0bJ3kQ0vtJIrLEfEJgmY9TtsCx6Q/exec', {
             method: 'POST',
             body: new URLSearchParams({
                 'email': email,
                 'password': password,
-                'action': 'login'  // Action pour identifier qu'il s'agit d'une connexion
+                'action': 'login'
             })
         })
         .then(response => response.text())
         .then(data => {
-            console.log("Réponse de la connexion : " + data);  // Affiche la réponse du script dans la console
-            if (data === "Connexion réussie") {
-                window.location.href = "livre.html";  // Redirection vers la page de livre après connexion réussie
-            } else {
-                alert("Email ou mot de passe incorrect.");
-            }
+            handleResponse(data, "login");
         })
         .catch(error => {
             console.error("Erreur lors de la connexion : ", error);
