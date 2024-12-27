@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        h2 {
+            color: gold;
+        }
+        .payment-method {
+            margin-top: 20px;
+        }
+        .payment-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: gold;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .payment-btn:hover {
+            background-color: #e5c100;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Page de Paiement</h2>
+    <div class="payment-method">
+        <p>Choisissez votre méthode de paiement :</p>
+        <p>Orange Money: 781525106</p>
+        <p>Wave Money: 781525106</p>
+    </div>
+
+    <button class="payment-btn" onclick="completePayment()">Payer</button>
+</div>
+
+<script>
+    function completePayment() {
+        alert('Paiement effectué. Vous pouvez maintenant accéder au livre.');
+        window.location.href = 'livre.html';  // Redirection vers la page livre.html après le paiement
+    }
+</script>
+
+</body>
+</html>
