@@ -1,207 +1,158 @@
+> Ahmed Said Aidara:
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site de Vente de Livre Numérique</title>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
-
+    <title>Connexion / Inscription</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #111;
-            color: gold;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
             padding: 0;
         }
         .container {
+            width: 100%;
             max-width: 400px;
-            margin: 50px auto;
-            background-color: #222;
+            margin: 0 auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
         }
-        input, button {
+        h2 {
+            color: gold;
+        }
+        input[type="email"], input[type="password"], input[type="text"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: gold;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         button {
             background-color: gold;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #d4af37;
+            background-color: #e5c100;
         }
-        .hidden {
-            display: none;
-        }
-        .dark-mode {
-            background-color: #111;
-            color: gold;
-        }
-        .light-mode {
-            background-color: #fff;
-            color: black;
-        }
-        .mode-toggle {
-            background-color: transparent;
-            border: 1px solid gold;
-            margin: 10px 0;
+        .toggle-form {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Toggle Mode -->
-    <button class="mode-toggle" onclick="toggleMode()">Mode Sombre/Clair</button>
 
-    <!-- Page d'Inscription -->
-    <div class="container" id="register-page">
+<div class="container" id="form-container">
+    <!-- Formulaire d'inscription -->
+    <div id="signup-form-container">
         <h2>Inscription</h2>
-        <input type="email" id="register-email" placeholder="Email">
-        <input type="password" id="register-password" placeholder="Mot de passe">
-        <button onclick="register()">S'inscrire</button>
-        <p>Déjà inscrit ? <a href="#" onclick="showLogin()">Se connecter</a></p>
+        <form id="signup-form">
+            <input type="text" id="name" placeholder="Nom" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+            <button type="submit">S'inscrire</button>
+        </form>
+        <p class="toggle-form" onclick="toggleForm('login')">Déjà inscrit ? Connectez-vous ici</p>
     </div>
 
-    <!-- Page de Connexion -->
-    <div class="container hidden" id="login-page">
+    <!-- Formulaire de connexion -->
+    <div id="login-form-container" style="display: none;">
         <h2>Connexion</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Mot de passe">
-        <button onclick="login()">Se connecter</button>
-        <p>Pas encore inscrit ? <a href="#" onclick="showRegister()">S'inscrire</a></p>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p class="toggle-form" onclick="toggleForm('signup')">Pas encore inscrit ? Inscrivez-vous ici</p>
     </div>
+</div>
 
-    <!-- Page de Paiement -->
-    <div class="container hidden" id="payment-page">
-        <h2>Paiement</h2>
-        <p>Effectuez votre paiement via Orange Money ou Wave Money.</p>
-        <input type="text" id="payment-phone" placeholder="Numéro de téléphone (Orange Money ou Wave)">
-        <button onclick="confirmPayment()">Confirmer le Paiement</button>
-        <button onclick="logout()">Se déconnecter</button>
-    </div>
+<script type="module">
+    // Importer les fonctions nécessaires de Firebase SDK
+    import { initializeApp } from "firebase/app";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-    <!-- Page de Lecture -->
-    <div class="container hidden" id="books-page">
-        <h2>Lecture de Livre</h2>
-        <div id="book-content">
-            <p>Voici votre livre numérique. Vous ne pouvez pas le copier, partager ou imprimer cette page.</p>
-        </div>
-        <button onclick="logout()">Se déconnecter</button>
-    </div>
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyAZSUTkv15sgATgEIFRDzLagkDO3EhjXLk",
+        authDomain: "lavoiedusalut-200cd.firebaseapp.com",
+        projectId: "lavoiedusalut-200cd",
+        storageBucket: "lavoiedusalut-200cd.firebasestorage.app",
+        messagingSenderId: "550979465757",
+        appId: "1:550979465757:web:fefe5f2967f355ab414cf4",
+        measurementId: "G-YHC0EF421Q"
+    };
 
-    <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZSUTkv15sgATgEIFRDzLagkDO3EhjXLk",
-            authDomain: "lavoiedusalut-200cd.firebaseapp.com",
-            projectId: "lavoiedusalut-200cd",
-            storageBucket: "lavoiedusalut-200cd.firebasestorage.app",
-            messagingSenderId: "550979465757",
-            appId: "1:550979465757:web:fefe5f2967f355ab414cf4",
-            measurementId: "G-YHC0EF421Q"
-        };
+    // Initialiser Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        // Initialisation Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.getAuth(app);
-        
-        // Mode sombre/clair
-let isDarkMode = true;
-        function toggleMode() {
-            document.body.classList.toggle(isDarkMode ? 'dark-mode' : 'light-mode');
-            isDarkMode = !isDarkMode;
+    // Fonction pour basculer entre les formulaires
+    function toggleForm(formType) {
+        if (formType === 'signup') {
+            document.getElementById('signup-form-container').style.display = 'block';
+            document.getElementById('login-form-container').style.display = 'none';
+        } else {
+            document.getElementById('signup-form-container').style.display = 'none';
+            document.getElementById('login-form-container').style.display = 'block';
         }
+    }
 
-        // Pages de gestion
-        function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(page => {
-                page.classList.add('hidden');
+    // Inscription
+    const signupForm = document.getElementById('signup-form');
+    signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+
+> Ahmed Said Aidara:
+const password = document.getElementById('password').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                alert('Inscription réussie !');
+                window.location.href = 'payment.html';  // Rediriger après inscription
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                alert('Erreur: ' + errorMessage);
             });
-            document.getElementById(pageId).classList.remove('hidden');
-        }
+    });
 
-        function showRegister() {
-            showPage('register-page');
-        }
+    // Connexion
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-        function showLogin() {
-            showPage('login-page');
-        }
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
-        // Inscription
-        function register() {
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            firebase.createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    alert("Inscription réussie !");
-                    showPage('payment-page'); // Redirige vers la page de paiement
-                })
-                .catch(error => {
-                    alert(error.message);
-                });
-        }
-
-        // Connexion
-        function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            firebase.signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    alert("Connexion réussie !");
-                    showPage('books-page'); // Redirige vers la page de lecture
-                })
-                .catch(error => {
-                    alert(error.message);
-                });
-        }
-
-        // Déconnexion
-        function logout() {
-            firebase.signOut(auth)
-                .then(() => {
-                    alert("Déconnecté !");
-                    showPage('login-page');
-                });
-        }
-
-        // Confirmer le paiement
-        function confirmPayment() {
-            const phone = document.getElementById('payment-phone').value;
-            alert("Paiement confirmé pour le numéro " + phone);
-            showPage('books-page'); // Accéder à la page de lecture après paiement
-        }
-
-        // Empêcher la copie, la capture, et l'impression sur la page de lecture
-        if (document.getElementById('books-page')) {
-            document.getElementById('book-content').addEventListener('mousedown', function(e) {
-                e.preventDefault();
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                alert('Connexion réussie !');
+                window.location.href = 'livre.html';  // Rediriger après connexion
+            })
+            .catch((error) => {
+                const errorMessage = error.message;
+                alert('Erreur: ' + errorMessage);
             });
-            document.oncopy = function() {
-                return false;
-            };
-            document.oncontextmenu = function() {
-                return false;
-            };
-            document.onkeydown = function(e) {
-                if (e.keyCode === 123) {  // Disable F12 (Inspect)
-                    return false;
-                }
-            };
-        }
-    </script>
+    });
+</script>
+
 </body>
 </html>
