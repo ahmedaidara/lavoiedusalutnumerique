@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Livre Sécurisé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Empêcher le scroll */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+
+        h2 {
+            color: gold;
+        }
+
+        .content {
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: gold;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #e5c100;
+        }
+
+        /* Désactivation du clic droit */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Désactivation du clic droit */
+        body {
+            pointer-events: none;
+        }
+
+        /* Désactivation de l'impression */
+        @media print {
+            body {
+                display: none;
+            }
+        }
+
+        /* Sécurisation contre les captures d'écran */
+        .content img {
+            pointer-events: none; /* Désactive l'interaction avec les images */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bienvenue dans mon livre numérique sécurisé</h2>
+    <div class="content">
+        <p>Voici le contenu de mon livre numérique. Profitez de la lecture !</p>
+        <!-- Ajouter ici le contenu du livre, sous forme d'images ou d'autres médias pour limiter le texte copiable -->
+    </div>
+    
+    <button class="logout-btn" onclick="logout()">Se déconnecter</button>
+</div>
+
+<script type="module">
+    import { getAuth, signOut } from "firebase/auth";
+    import { initializeApp } from "firebase/app";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAZSUTkv15sgATgEIFRDzLagkDO3EhjXLk",
+        authDomain: "lavoiedusalut-200cd.firebaseapp.com",
+        projectId: "lavoiedusalut-200cd",
+        storageBucket: "lavoiedusalut-200cd.firebasestorage.app",
+        messagingSenderId: "550979465757",
+        appId: "1:550979465757:web:fefe5f2967f355ab414cf4",
+        measurementId: "G-YHC0EF421Q"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Déconnexion de l'utilisateur
+    function logout() {
+        signOut(auth).then(() => {
+            alert('Déconnexion réussie');
+            window.location.href = 'index.html';  // Redirection vers la page d'accueil (connexion/inscription)
+        }).catch((error) => {
+            alert('Erreur lors de la déconnexion: ' + error.message);
+        });
+    }
+</script>
+
+</body>
+</html>
