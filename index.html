@@ -1,90 +1,66 @@
-> Ahmed Said Aidara:
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion / Inscription</title>
+    <title>Inscription / Connexion</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
         }
         .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
             text-align: center;
         }
         h2 {
             color: gold;
         }
-        input[type="email"], input[type="password"], input[type="text"] {
+        input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         button {
             background-color: gold;
             color: white;
             padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
             background-color: #e5c100;
         }
-        .toggle-form {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #777;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-
-<div class="container" id="form-container">
-    <!-- Formulaire d'inscription -->
-    <div id="signup-form-container">
-        <h2>Inscription</h2>
-        <form id="signup-form">
-            <input type="text" id="name" placeholder="Nom" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Mot de passe" required>
-            <button type="submit">S'inscrire</button>
-        </form>
-        <p class="toggle-form" onclick="toggleForm('login')">Déjà inscrit ? Connectez-vous ici</p>
-    </div>
-
-    <!-- Formulaire de connexion -->
-    <div id="login-form-container" style="display: none;">
-        <h2>Connexion</h2>
-        <form id="login-form">
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Mot de passe" required>
-            <button type="submit">Se connecter</button>
-        </form>
-        <p class="toggle-form" onclick="toggleForm('signup')">Pas encore inscrit ? Inscrivez-vous ici</p>
-    </div>
+<div class="container">
+    <h2>Inscription / Connexion</h2>
+    <form id="authForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Mot de passe" required>
+        <button type="submit" id="submitBtn">S'inscrire / Se connecter</button>
+    </form>
 </div>
 
 <script type="module">
-    // Importer les fonctions nécessaires de Firebase SDK
-    import { initializeApp } from "firebase/app";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+    import { initializeApp } from "firebase/app";
 
-    // Configuration Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyAZSUTkv15sgATgEIFRDzLagkDO3EhjXLk",
         authDomain: "lavoiedusalut-200cd.firebaseapp.com",
@@ -95,62 +71,38 @@
         measurementId: "G-YHC0EF421Q"
     };
 
-    // Initialiser Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Fonction pour basculer entre les formulaires
-    function toggleForm(formType) {
-        if (formType === 'signup') {
-            document.getElementById('signup-form-container').style.display = 'block';
-            document.getElementById('login-form-container').style.display = 'none';
-        } else {
-            document.getElementById('signup-form-container').style.display = 'none';
-            document.getElementById('login-form-container').style.display = 'block';
-        }
-    }
-
-    // Inscription
-    const signupForm = document.getElementById('signup-form');
-    signupForm.addEventListener('submit', (e) => {
+    document.getElementById('authForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-> Ahmed Said Aidara:
-const password = document.getElementById('password').value;
+        const isNewUser = !document.getElementById('submitBtn').innerText.includes('Se connecter');
 
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                alert('Inscription réussie !');
-                window.location.href = 'payment.html';  // Rediriger après inscription
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                alert('Erreur: ' + errorMessage);
-            });
-    });
-
-    // Connexion
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                alert('Connexion réussie !');
-                window.location.href = 'livre.html';  // Rediriger après connexion
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                alert('Erreur: ' + errorMessage);
-            });
+        if (isNewUser) {
+            // Inscription
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Redirection vers payment.html après inscription
+                    window.location.href = 'payment.html';
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        } else {
+            // Connexion
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Redirection vers livre.html après connexion
+                    window.location.href = 'livre.html';
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        }
     });
 </script>
 
